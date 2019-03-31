@@ -4,19 +4,21 @@ TCP
 
 ## How does the client find the server (addresses and ports)?
 
-adresse IP : à définir
+adresse IP : fournie par le serveur
 
 port : 6259
 
 ## Who speaks first?
 
-Le client envoie une requête au serveur en premier
+Lors de la connection, le serveur envoie un message de bienvenu. Puis le client envoie une requête au serveur.
 
 ## What is the sequence of messages exchanged by the client and the server?
 
-Le client envoie un message sous la forme opération, 1erNombre, 2èmeNombre\n
+Une fois que le client se connecte sur le serveur, ce dernier envoie un message de bienvenu ainsi que une description de ce que peut faire le client. Puis le serveur se met en attente d'une requête.
 
-Le serveur envoie soit le résultat soit un erreur
+Le client envoie un message sous la forme opération 1erNombre 2èmeNombre\n
+
+Le serveur envoie soit le résultat soit une erreur
 
 ## What happens when a message is received from the other party?
 
@@ -28,7 +30,7 @@ Le client affiche l'opération avec son résultat
 
 Message du serveur : 
 
- - Si le message du client est correct, envoie : Résultat de 1erNombre opération 2èmeNombre = résultat\n
+ - Si le message du client est correct, envoie : Resultat: 1erNombre opération 2èmeNombre = résultat\n
  
  - Si le message du client est incorrecte      : Erreur de saisie\n
 
