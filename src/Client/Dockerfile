@@ -1,6 +1,6 @@
 FROM oliechti/demo1
 
-COPY client.jar /opt/app/client.jar
+COPY Client.jar /opt/app/client.jar
 
 EXPOSE 2205
 
