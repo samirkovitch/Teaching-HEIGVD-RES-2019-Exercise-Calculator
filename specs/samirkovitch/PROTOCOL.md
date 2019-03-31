@@ -22,6 +22,8 @@ Le serveur envoie soit le résultat soit un erreur
 
 Le serveur reçoit le message du client. Il doit vérifier l'opération ainsi que les nombres pour effectuer le calcul
 
+Le client affiche l'opération avec son résultat
+
 ## What is the syntax of the messages? How we generate and parse them?
 
 Message du serveur : 
