@@ -30,7 +30,7 @@ public class Server {
     private final int testDuration = 15000;
     private final int pauseDuration = 1000;
     private final int numberOfIterations = testDuration / pauseDuration;
-    private final int listenPort = 2205;
+    private final int listenPort = 6259;
 
     /**
      * This method does the entire processing.
@@ -42,6 +42,12 @@ public class Server {
         Socket clientSocket = null;
         BufferedReader reader = null;
         PrintWriter writer = null;
+
+        String line;
+        String[] splitLine;
+        int firstNumber;
+        int secondNumber;
+        boolean shouldRun = true;
 
         try {
             LOG.log(Level.INFO, "Creating a server socket and binding it on any of the available network interfaces and on port {0}", new Object[]{Integer.toString(listenPort)});
@@ -59,13 +65,64 @@ public class Server {
             writer = new PrintWriter(clientSocket.getOutputStream());
 
             LOG.log(Level.INFO, "Starting my job... sending current time to the client for {0} ms", testDuration);
-            for (int i = 0; i < numberOfIterations; i++) {
-                writer.println(String.format("{'IP address': '%s',  time' : '%s'}", serverSocket.getInetAddress(), new Date()));
+
+            ////// DEBUT
+            writer.println("Welcome to the Exercise-Calculator\n" +
+                    "You can send me some operation int the format: [operation] [first number] [second number]\n" +
+                    "The 2 numbers have to be integer\n" +
+                    "Operation available: + - * /\n");
+
+            writer.flush();
+
+            //LOG.info("Reading until client sends BYE or closes the connection...");
+
+
+            line = reader.readLine();
+            LOG.log(Level.INFO,line);
+
+
+
+
+                splitLine = line.split("[\\s]");
+
+                if (splitLine.length > 3) {
+                    writer.println("Too many arguments or wrong splter. Your operation and yours numbers must be seperated by a single space");
+                    writer.println("And Restpect the format [operation] [first number] [second number]");
+                } else if (splitLine.length < 3) {
+                    writer.println("Not enough arguments or wrong splter. Your operation and yours numbers must be seperated by a single space");
+                    writer.println("And Restpect the format [operation] [first number] [second number]");
+
+                } else {
+                    try{
+                        firstNumber = new Integer(splitLine[1]).intValue();
+                        secondNumber = new Integer(splitLine[2]).intValue();
+                        //System.out.println(firstNumber + " " + secondNumber);
+                        //writer.println(splitLine[0]);
+                        if (splitLine[0].equals("+")) {
+                            writer.println("Resultat: " + firstNumber + " + " + secondNumber + " = " + (firstNumber + secondNumber) + "\n");
+                        } else if (splitLine[0].equals("-")) {
+                            writer.println("Resultat: " + firstNumber + " - " + secondNumber + " = " + (firstNumber - secondNumber) + "\n");
+                        } else if (splitLine[0].equals("*")) {
+                            writer.println("Resultat: " + firstNumber + " * " + secondNumber + " = " + (firstNumber * secondNumber) + "\n");
+                        } else if (splitLine[0].equals("/")) {
+                            writer.println("Resultat: " + firstNumber + " / " + secondNumber + " = " + (firstNumber / secondNumber) + "\n");
+                        } else {
+                            writer.println("Wrong operation");
+                        }
+                    }
+                    catch(NumberFormatException e){
+                        writer.println("One or the two number are not integer");
+                    }
+                }
                 writer.flush();
-                LOG.log(Level.INFO, "Sent data to client, doing a pause...");
-                Thread.sleep(pauseDuration);
-            }
-        } catch (IOException | InterruptedException ex) {
+            
+
+
+            ////// FIN
+
+            //writer.println("Result : lol\n");
+            //writer.flush();
+        } catch (IOException ex /*| InterruptedException ex*/) {
             LOG.log(Level.SEVERE, ex.getMessage());
         } finally {
             LOG.log(Level.INFO, "We are done. Cleaning up resources, closing streams and sockets...");
