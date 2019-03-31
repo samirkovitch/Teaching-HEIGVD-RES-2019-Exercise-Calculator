@@ -19,13 +19,6 @@ public class Client{
     private BufferedReader reader;
     private PrintWriter writer;
 
-    /*public Client(int PortServer, int AddressIpServer)
-    {
-        this.PortServer = PortServer;
-        this.AddressIpServer = AddressIpServer;
-
-    }*/
-
     public boolean Connect(int PortServer, InetAddress AddressIpServer)
     {
         this.PortServer = PortServer;

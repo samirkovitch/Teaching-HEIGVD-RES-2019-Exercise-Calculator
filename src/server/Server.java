@@ -26,10 +26,6 @@ import java.util.logging.Logger;
 public class Server {
 
     static final Logger LOG = Logger.getLogger(Server.class.getName());
-
-    private final int testDuration = 15000;
-    private final int pauseDuration = 1000;
-    private final int numberOfIterations = testDuration / pauseDuration;
     private final int listenPort = 6259;
 
     /**
@@ -49,55 +45,47 @@ public class Server {
         int secondNumber;
         boolean shouldRun = true;
 
-        try {
-            LOG.log(Level.INFO, "Creating a server socket and binding it on any of the available network interfaces and on port {0}", new Object[]{Integer.toString(listenPort)});
-            serverSocket = new ServerSocket(listenPort, 50, InetAddress.getLocalHost());
-            logServerSocketAddress(serverSocket);
+        while (true) {
+            try {
+                LOG.log(Level.INFO, "Creating a server socket and binding it on any of the available network interfaces and on port {0}", new Object[]{Integer.toString(listenPort)});
+                serverSocket = new ServerSocket(listenPort, 50, InetAddress.getLocalHost());
+                logServerSocketAddress(serverSocket);
 
-            LOG.log(Level.INFO, "Waiting (blocking) for a connection request on {0} : {1}", new Object[]{serverSocket.getInetAddress(), Integer.toString(serverSocket.getLocalPort())});
-            clientSocket = serverSocket.accept();
+                LOG.log(Level.INFO, "Waiting (blocking) for a connection request on {0} : {1}", new Object[]{serverSocket.getInetAddress(), Integer.toString(serverSocket.getLocalPort())});
+                clientSocket = serverSocket.accept();
 
-            LOG.log(Level.INFO, "A client has arrived. We now have a client socket with following attributes:");
-            logSocketAddress(clientSocket);
+                LOG.log(Level.INFO, "A client has arrived. We now have a client socket with following attributes:");
+                logSocketAddress(clientSocket);
 
-            LOG.log(Level.INFO, "Getting a Reader and a Writer connected to the client socket...");
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            writer = new PrintWriter(clientSocket.getOutputStream());
+                LOG.log(Level.INFO, "Getting a Reader and a Writer connected to the client socket...");
+                reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                writer = new PrintWriter(clientSocket.getOutputStream());
 
-            LOG.log(Level.INFO, "Starting my job... sending current time to the client for {0} ms", testDuration);
+                ////// DEBUT
+                writer.println("Welcome to the Exercise-Calculator\n" +
+                        "You can send me some operation int the format: [operation] [first number] [second number]\n" +
+                        "The 2 numbers have to be integer\n" +
+                        "Operation available: + - * /\n");
 
-            ////// DEBUT
-            writer.println("Welcome to the Exercise-Calculator\n" +
-                    "You can send me some operation int the format: [operation] [first number] [second number]\n" +
-                    "The 2 numbers have to be integer\n" +
-                    "Operation available: + - * /\n");
+                writer.flush();
 
-            writer.flush();
-
-            //LOG.info("Reading until client sends BYE or closes the connection...");
-
-
-            line = reader.readLine();
-            LOG.log(Level.INFO,line);
-
-
-
+                line = reader.readLine();
+                LOG.log(Level.INFO, line);
 
                 splitLine = line.split("[\\s]");
 
                 if (splitLine.length > 3) {
-                    writer.println("Too many arguments or wrong splter. Your operation and yours numbers must be seperated by a single space");
-                    writer.println("And Restpect the format [operation] [first number] [second number]");
+                    writer.println("Too many arguments or wrong splter. Your operation and yours numbers must be seperated by a single space" +
+                            "And Restpect the format [operation] [first number] [second number]\n");
                 } else if (splitLine.length < 3) {
-                    writer.println("Not enough arguments or wrong splter. Your operation and yours numbers must be seperated by a single space");
-                    writer.println("And Restpect the format [operation] [first number] [second number]");
+                    writer.println("Not enough arguments or wrong splter. Your operation and yours numbers must be seperated by a single space" +
+                            "And Restpect the format [operation] [first number] [second number]\n");
 
                 } else {
-                    try{
+                    try {
                         firstNumber = new Integer(splitLine[1]).intValue();
                         secondNumber = new Integer(splitLine[2]).intValue();
-                        //System.out.println(firstNumber + " " + secondNumber);
-                        //writer.println(splitLine[0]);
+
                         if (splitLine[0].equals("+")) {
                             writer.println("Resultat: " + firstNumber + " + " + secondNumber + " = " + (firstNumber + secondNumber) + "\n");
                         } else if (splitLine[0].equals("-")) {
@@ -109,38 +97,34 @@ public class Server {
                         } else {
                             writer.println("Wrong operation");
                         }
-                    }
-                    catch(NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         writer.println("One or the two number are not integer");
                     }
                 }
                 writer.flush();
-            
 
+                ////// FIN;
 
-            ////// FIN
-
-            //writer.println("Result : lol\n");
-            //writer.flush();
-        } catch (IOException ex /*| InterruptedException ex*/) {
-            LOG.log(Level.SEVERE, ex.getMessage());
-        } finally {
-            LOG.log(Level.INFO, "We are done. Cleaning up resources, closing streams and sockets...");
-            try {
-                reader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            writer.close();
-            try {
-                clientSocket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                serverSocket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex /*| InterruptedException ex*/) {
+                LOG.log(Level.SEVERE, ex.getMessage());
+            } finally {
+                LOG.log(Level.INFO, "We are done. Cleaning up resources, closing streams and sockets...");
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                writer.close();
+                try {
+                    clientSocket.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    serverSocket.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
