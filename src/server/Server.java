@@ -1,4 +1,3 @@
-package ch.heigvd.res.examples;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,9 +23,9 @@ import java.util.logging.Logger;
  *
  * @author Olivier Liechti
  */
-public class StreamingTimeServer {
+public class Server {
 
-    static final Logger LOG = Logger.getLogger(StreamingTimeServer.class.getName());
+    static final Logger LOG = Logger.getLogger(Server.class.getName());
 
     private final int testDuration = 15000;
     private final int pauseDuration = 1000;
@@ -73,18 +72,18 @@ public class StreamingTimeServer {
             try {
                 reader.close();
             } catch (IOException ex) {
-                Logger.getLogger(StreamingTimeServer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
             writer.close();
             try {
                 clientSocket.close();
             } catch (IOException ex) {
-                Logger.getLogger(StreamingTimeServer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 serverSocket.close();
             } catch (IOException ex) {
-                Logger.getLogger(StreamingTimeServer.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -119,7 +118,7 @@ public class StreamingTimeServer {
     public static void main(String[] args) {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
 
-        StreamingTimeServer server = new StreamingTimeServer();
+        Server server = new Server();
         server.start();
     }
 
